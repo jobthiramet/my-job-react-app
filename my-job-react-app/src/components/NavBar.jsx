@@ -1,15 +1,16 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 export default function NavBar() {
   return (
     <nav className="navbar">
-      {/* โลโก้ฝั่งซ้าย */}
-      <div className="logo">hh<span className="dot">.</span></div>
-      
-      {/* กลุ่มปุ่มกดฝั่งขวา */}
+      <Link to="/" className="logo">
+        hh<span className="dot">.</span>
+      </Link>
+
       <div className="nav-actions">
-        <button className="btn-login">Log in</button>
-        <button className="btn-signup">Sign up</button>
+        <Link to="/login" className="btn-login">Log in</Link>
+        <Link to="/signup" className="btn-signup">Sign up</Link>
       </div>
     </nav>
   );

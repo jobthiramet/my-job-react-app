@@ -1,21 +1,20 @@
 import React from 'react';
-import NavBar from './components/NavBar';
-import HeroSection from './components/HeroSection';
-import LatestArticles from './components/LatestArticles';
-import Footer from './components/Footer';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import HomePage from './pages/HomePage';
+import LoginPage from './pages/LoginPage';
+import SignUpPage from './pages/SignUpPage';
+import SignUpSuccessPage from './pages/SignUpSuccessPage';
 import './App.css';
 
 export default function App() {
   return (
-    <>
-      <div className="app-container">
-        <NavBar />
-        <main>
-          <HeroSection />
-          <LatestArticles />
-        </main>
-      </div>
-      <Footer />
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/signup/success" element={<SignUpSuccessPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
