@@ -11,8 +11,6 @@ function SocialIcon({ href, label, children }) {
 export default function Footer() {
   return (
     <footer className="footer">
-      <a href="#" className="view-more">View more</a>
-
       <div className="footer-bar">
         <div className="footer-left">
           <span className="footer-label">Get in touch</span>
