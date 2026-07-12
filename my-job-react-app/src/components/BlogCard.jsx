@@ -1,8 +1,9 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
-export default function BlogCard({ image, tag, title, description, author, date }) {
+export default function BlogCard({ id, image, tag, title, description, author, date }) {
   return (
-    <div className="article-card">
+    <Link to={`/post/${id}`} className="article-card">
       <div className="card-poster">
         <img src={image} alt={title} className="card-image" />
       </div>
@@ -21,6 +22,6 @@ export default function BlogCard({ image, tag, title, description, author, date 
           <span className="post-date">{date}</span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
