@@ -20,7 +20,7 @@ export default function SignUpSuccessPage() {
               <Check className="success-check" />
             </div>
             <h1 className="success-title">Registration success</h1>
-            <Link to="/login" className="success-continue">
+            <Link to="/" className="success-continue">
               Continue
             </Link>
           </div>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import NavBar from '../components/NavBar';
+import { useAuth } from '../context/AuthContext';
 import { authenticateUser } from '../data/users';
 import { validateLoginForm } from '../utils/loginValidation';
 
@@ -11,6 +12,7 @@ const initialForm = {
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState({});
   const [formError, setFormError] = useState('');
@@ -48,6 +50,7 @@ export default function LoginPage() {
       return;
     }
 
+    login(user);
     navigate('/');
   }
 

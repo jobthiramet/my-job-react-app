@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import NavBar from '../components/NavBar';
+import { useAuth } from '../context/AuthContext';
 import { getRegisteredUsers, registerUser } from '../data/users';
 import { validateSignUpForm } from '../utils/signUpValidation';
 
@@ -13,6 +14,7 @@ const initialForm = {
 
 export default function SignUpPage() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState({});
 
@@ -40,13 +42,14 @@ export default function SignUpPage() {
       return;
     }
 
-    registerUser({
+    const newUser = registerUser({
       name: form.name.trim(),
       username: form.username.trim(),
       email: form.email.trim(),
       password: form.password,
     });
 
+    login(newUser);
     navigate('/signup/success', { state: { fromSignUp: true } });
   }
 
