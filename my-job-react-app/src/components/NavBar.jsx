@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { User, KeyRound, LayoutGrid, LogOut } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { isAdmin } from '../data/users';
 
 export default function NavBar() {
   const navigate = useNavigate();
@@ -9,6 +10,7 @@ export default function NavBar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
   const initial = user?.name?.trim()?.charAt(0)?.toUpperCase() || '?';
+  const showAdmin = isAdmin(user);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -59,7 +61,11 @@ export default function NavBar() {
               onClick={() => setMenuOpen((open) => !open)}
             >
               <span className="nav-profile-avatar" aria-hidden="true">
-                {initial}
+                {user.avatar ? (
+                  <img src={user.avatar} alt="" className="nav-profile-avatar-img" />
+                ) : (
+                  initial
+                )}
               </span>
               <span className="nav-profile-name">{user.name}</span>
             </button>
@@ -84,15 +90,17 @@ export default function NavBar() {
                   <KeyRound className="nav-dropdown-icon" strokeWidth={1.75} aria-hidden="true" />
                   Reset password
                 </Link>
-                <Link
-                  to="/admin"
-                  className="nav-dropdown-item"
-                  role="menuitem"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  <LayoutGrid className="nav-dropdown-icon" strokeWidth={1.75} aria-hidden="true" />
-                  Admin panel
-                </Link>
+                {showAdmin && (
+                  <Link
+                    to="/admin"
+                    className="nav-dropdown-item"
+                    role="menuitem"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    <LayoutGrid className="nav-dropdown-icon" strokeWidth={1.75} aria-hidden="true" />
+                    Admin panel
+                  </Link>
+                )}
                 <button
                   type="button"
                   className="nav-dropdown-item"

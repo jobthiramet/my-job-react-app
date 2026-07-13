@@ -7,6 +7,7 @@ export const defaultUsers = [
     username: 'thompson',
     email: 'thompson@example.com',
     password: 'password123',
+    role: 'admin',
     createdAt: '2026-06-01T10:00:00.000Z',
     lastLoginAt: null,
   },
@@ -15,6 +16,7 @@ export const defaultUsers = [
     username: 'moodeng.cute',
     email: 'moodeng.cute@gmail.com',
     password: 'moodeng123',
+    role: 'user',
     createdAt: '2026-06-15T10:00:00.000Z',
     lastLoginAt: null,
   },
@@ -24,18 +26,36 @@ function saveUsers(users) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(users));
 }
 
+function withRole(user) {
+  if (!user) return null;
+
+  if (user.role) {
+    return user;
+  }
+
+  return {
+    ...user,
+    role: user.email?.toLowerCase() === 'thompson@example.com' ? 'admin' : 'user',
+  };
+}
+
 function toPublicUser(user) {
   if (!user) return null;
 
-  const { password, ...publicUser } = user;
+  const normalized = withRole(user);
+  const { password, ...publicUser } = normalized;
   return publicUser;
+}
+
+export function isAdmin(user) {
+  return withRole(user)?.role === 'admin';
 }
 
 export function getRegisteredUsers() {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
-      return JSON.parse(stored);
+      return JSON.parse(stored).map(withRole);
     }
   } catch {
     // ignore invalid storage data
@@ -49,6 +69,7 @@ export function registerUser(user) {
   const now = new Date().toISOString();
   const newUser = {
     ...user,
+    role: 'user',
     createdAt: now,
     lastLoginAt: now,
   };
@@ -73,7 +94,7 @@ export function authenticateUser(email, password) {
 
   const now = new Date().toISOString();
   users[index] = {
-    ...users[index],
+    ...withRole(users[index]),
     lastLoginAt: now,
   };
   saveUsers(users);
@@ -85,7 +106,7 @@ export function getCurrentUser() {
   try {
     const stored = localStorage.getItem(SESSION_KEY);
     if (stored) {
-      return JSON.parse(stored);
+      return toPublicUser(JSON.parse(stored));
     }
   } catch {
     // ignore invalid storage data
@@ -102,4 +123,44 @@ export function setCurrentUser(user) {
 
 export function clearCurrentUser() {
   localStorage.removeItem(SESSION_KEY);
+}
+
+export function updateUserProfile(email, updates) {
+  const users = getRegisteredUsers();
+  const index = users.findIndex(
+    (user) => user.email.toLowerCase() === email.trim().toLowerCase(),
+  );
+
+  if (index === -1) {
+    throw new Error('User not found.');
+  }
+
+  const nextUser = {
+    ...withRole(users[index]),
+    name: updates.name?.trim() || users[index].name,
+    username: updates.username?.trim() || users[index].username,
+    avatar: updates.avatar !== undefined ? updates.avatar : users[index].avatar,
+  };
+
+  users[index] = nextUser;
+  saveUsers(users);
+  return toPublicUser(nextUser);
+}
+
+export function updateUserPassword(email, nextPassword) {
+  const users = getRegisteredUsers();
+  const index = users.findIndex(
+    (user) => user.email.toLowerCase() === email.trim().toLowerCase(),
+  );
+
+  if (index === -1) {
+    throw new Error('User not found.');
+  }
+
+  users[index] = {
+    ...withRole(users[index]),
+    password: nextPassword,
+  };
+  saveUsers(users);
+  return toPublicUser(users[index]);
 }

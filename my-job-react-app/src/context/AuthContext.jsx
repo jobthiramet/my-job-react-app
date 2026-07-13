@@ -3,6 +3,8 @@ import {
   clearCurrentUser,
   getCurrentUser,
   setCurrentUser,
+  updateUserPassword,
+  updateUserProfile,
 } from '../data/users';
 
 const AuthContext = createContext(null);
@@ -21,6 +23,26 @@ export function AuthProvider({ children }) {
       logout() {
         clearCurrentUser();
         setUser(null);
+      },
+      updateProfile(updates) {
+        if (!user?.email) {
+          throw new Error('Not signed in.');
+        }
+
+        const savedUser = updateUserProfile(user.email, updates);
+        setCurrentUser(savedUser);
+        setUser(savedUser);
+        return savedUser;
+      },
+      changePassword(nextPassword) {
+        if (!user?.email) {
+          throw new Error('Not signed in.');
+        }
+
+        const savedUser = updateUserPassword(user.email, nextPassword);
+        setCurrentUser(savedUser);
+        setUser(savedUser);
+        return savedUser;
       },
     }),
     [user],
