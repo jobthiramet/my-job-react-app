@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink, Navigate, Outlet, useNavigate } from 'react-router-dom';
+import { Link, NavLink, Navigate, Outlet, useNavigate } from 'react-router-dom';
 import {
   FileText,
   FolderOpen,
@@ -9,6 +9,7 @@ import {
   KeyRound,
   LogOut,
   Newspaper,
+  Home,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import {
@@ -110,10 +111,16 @@ export default function AdminLayout() {
           ))}
         </nav>
 
-        <button type="button" className="admin-logout" onClick={handleLogout}>
-          <LogOut className="admin-nav-icon" strokeWidth={1.75} />
-          Log out
-        </button>
+        <div className="admin-sidebar-footer">
+          <Link to="/" className="admin-home-link">
+            <Home className="admin-nav-icon" strokeWidth={1.75} />
+            Back to home
+          </Link>
+          <button type="button" className="admin-logout" onClick={handleLogout}>
+            <LogOut className="admin-nav-icon" strokeWidth={1.75} />
+            Log out
+          </button>
+        </div>
       </aside>
 
       <div className="admin-main">

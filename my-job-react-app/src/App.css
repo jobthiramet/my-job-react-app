@@ -1587,6 +1587,7 @@
   }
 
   .admin-nav-link,
+  .admin-home-link,
   .admin-logout {
     display: flex;
     align-items: center;
@@ -1606,8 +1607,15 @@
   }
 
   .admin-nav-link:hover,
+  .admin-home-link:hover,
   .admin-logout:hover {
     background: rgba(255, 255, 255, 0.08);
+  }
+
+  .admin-sidebar-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
   }
 
   .admin-nav-link.is-active {
@@ -2103,8 +2111,14 @@
     }
 
     .admin-nav-link,
+    .admin-home-link,
     .admin-logout {
       width: auto;
+    }
+
+    .admin-sidebar-footer {
+      flex-direction: row;
+      flex-wrap: wrap;
     }
 
     .admin-main {
