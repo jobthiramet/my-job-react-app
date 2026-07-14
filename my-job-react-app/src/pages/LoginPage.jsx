@@ -76,7 +76,12 @@ export default function LoginPage() {
               </div>
 
               <div className={`form-field ${errors.password ? 'has-error' : ''}`}>
-                <label htmlFor="password">Password</label>
+                <div className="form-label-row">
+                  <label htmlFor="password">Password</label>
+                  <Link to="/forgot-password" className="forgot-password-link">
+                    Forgot password?
+                  </Link>
+                </div>
                 <input
                   id="password"
                   name="password"

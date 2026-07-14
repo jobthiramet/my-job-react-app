@@ -158,6 +158,17 @@ export function getPublicUsers() {
   return getRegisteredUsers().map(toPublicUser);
 }
 
+export function findUserByEmail(email) {
+  const normalizedEmail = email.trim().toLowerCase();
+  if (!normalizedEmail) return null;
+
+  return (
+    getRegisteredUsers().find(
+      (user) => user.email.toLowerCase() === normalizedEmail,
+    ) || null
+  );
+}
+
 export function registerUser(user) {
   const users = getRegisteredUsers();
   const now = new Date().toISOString();
