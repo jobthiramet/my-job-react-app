@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Smile, Link2 } from 'lucide-react';
+import { Smile, Link2, Trash2 } from 'lucide-react';
+import ConfirmModal from './admin/ConfirmModal';
 import { useAuth } from '../context/AuthContext';
+import { canModerateContent } from '../data/users';
 import {
   addCommentToPost,
+  deleteCommentFromPost,
   formatCommentDate,
   getCommentsForPost,
   getGuestId,
@@ -47,11 +50,13 @@ function XIcon({ className }) {
 export default function PostComments({ postId }) {
   const { user } = useAuth();
   const likeUserKey = user?.email || getGuestId();
+  const canDeleteComments = canModerateContent(user);
   const [comments, setComments] = useState(() => getCommentsForPost(postId));
   const [likeState, setLikeState] = useState(() => getLikeState(postId, likeUserKey));
   const [text, setText] = useState('');
   const [copyLabel, setCopyLabel] = useState('Copy link');
   const [error, setError] = useState('');
+  const [deleteTarget, setDeleteTarget] = useState(null);
   const pageUrl = typeof window !== 'undefined' ? window.location.href : '';
 
   useEffect(() => {
@@ -59,6 +64,7 @@ export default function PostComments({ postId }) {
     setLikeState(getLikeState(postId, likeUserKey));
     setText('');
     setError('');
+    setDeleteTarget(null);
   }, [postId, likeUserKey]);
 
   function handleToggleLike() {
@@ -99,6 +105,13 @@ export default function PostComments({ postId }) {
 
     setComments(nextComments);
     setText('');
+  }
+
+  function handleDeleteComment() {
+    if (!deleteTarget) return;
+    const nextComments = deleteCommentFromPost(postId, deleteTarget.id);
+    setComments(nextComments);
+    setDeleteTarget(null);
   }
 
   return (
@@ -190,12 +203,33 @@ export default function PostComments({ postId }) {
               <div className="comment-meta">
                 <span className="comment-author">{comment.name}</span>
                 <span className="comment-time">{formatCommentDate(comment.createdAt)}</span>
+                {canDeleteComments && (
+                  <button
+                    type="button"
+                    className="comment-delete-btn"
+                    aria-label={`Delete comment by ${comment.name}`}
+                    onClick={() => setDeleteTarget(comment)}
+                  >
+                    <Trash2 size={14} strokeWidth={1.75} />
+                    Delete
+                  </button>
+                )}
               </div>
               <p className="comment-text">{comment.text}</p>
             </div>
           </article>
         ))}
       </div>
+
+      <ConfirmModal
+        open={Boolean(deleteTarget)}
+        title="Delete comment?"
+        message="Are you sure you want to delete this comment? This cannot be undone."
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        onCancel={() => setDeleteTarget(null)}
+        onConfirm={handleDeleteComment}
+      />
     </section>
   );
 }

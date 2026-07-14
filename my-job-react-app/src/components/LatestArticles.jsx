@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import BlogCard from './BlogCard';
 import {
   Select,
@@ -7,14 +7,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from './ui/select';
-import { categories, moviesData } from '../data/movies';
+import {
+  getPublicBlogCategories,
+  getPublishedBlogPosts,
+} from '../data/adminArticles';
 
 export default function LatestArticles() {
+  const categories = useMemo(() => getPublicBlogCategories(), []);
+  const posts = useMemo(() => getPublishedBlogPosts(), []);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState(categories[0]);
+  const [selectedCategory, setSelectedCategory] = useState(categories[0] || 'All Reviews');
   const [showAll, setShowAll] = useState(false);
 
-  const filteredMovies = moviesData.filter((movie) => {
+  const filteredMovies = posts.filter((movie) => {
     const matchesSearch = movie.title
       .toLowerCase()
       .includes(searchQuery.trim().toLowerCase());
@@ -56,7 +61,7 @@ export default function LatestArticles() {
         </div>
         <div className="search-box">
           <input
-            type="text"
+            type="search"
             placeholder="Search movies..."
             value={searchQuery}
             onChange={handleSearchChange}
@@ -68,7 +73,7 @@ export default function LatestArticles() {
       <div className="filter-bar-mobile">
         <div className="search-box mobile-search">
           <input
-            type="text"
+            type="search"
             placeholder="Search movies..."
             value={searchQuery}
             onChange={handleSearchChange}

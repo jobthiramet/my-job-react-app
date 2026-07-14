@@ -131,6 +131,40 @@ export function deleteAdminArticle(id) {
   return articles;
 }
 
+export function articleToPublicPost(article) {
+  return {
+    id: article.id,
+    title: article.title,
+    tag: article.category,
+    description: article.description,
+    image: article.thumbnail,
+    author: article.author,
+    date: article.date,
+    content: article.content || {
+      intro: article.description,
+      sections: [],
+    },
+  };
+}
+
+export function getPublishedBlogPosts() {
+  return getAdminArticles()
+    .filter((article) => article.status === 'published')
+    .map(articleToPublicPost);
+}
+
+export function getPublishedBlogPostById(id) {
+  const article = getAdminArticleById(id);
+  if (!article || article.status !== 'published') {
+    return null;
+  }
+  return articleToPublicPost(article);
+}
+
+export function getPublicBlogCategories() {
+  return ['All Reviews', ...getAdminCategories()];
+}
+
 export function filterAdminArticles(articles, { search = '', status = 'all', category = 'all' }) {
   const query = search.trim().toLowerCase();
 

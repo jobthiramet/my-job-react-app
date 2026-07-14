@@ -151,6 +151,16 @@ export function addCommentToPost(postId, comment) {
   return nextList;
 }
 
+export function deleteCommentFromPost(postId, commentId) {
+  const store = readStore();
+  const key = String(postId);
+  const existing = store[key] || defaultCommentsByPost.default;
+  const nextList = existing.filter((comment) => comment.id !== commentId);
+  store[key] = nextList;
+  writeStore(store);
+  return nextList;
+}
+
 export function formatCommentDate(value) {
   return new Date(value).toLocaleString('en-GB', {
     day: '2-digit',

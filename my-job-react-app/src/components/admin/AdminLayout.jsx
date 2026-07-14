@@ -4,19 +4,64 @@ import {
   FileText,
   FolderOpen,
   User,
+  Users,
   Bell,
   KeyRound,
   LogOut,
+  Newspaper,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { isAdmin } from '../../data/users';
+import {
+  canManageBlog,
+  canManageUsers,
+  getRoleLabel,
+  isAdmin,
+  isAdminIT,
+} from '../../data/users';
 
-const navItems = [
-  { to: '/admin/articles', label: 'Article management', icon: FileText },
-  { to: '/admin/categories', label: 'Category management', icon: FolderOpen },
-  { to: '/admin/profile', label: 'Profile', icon: User },
-  { to: '/admin/notifications', label: 'Notification', icon: Bell },
-  { to: '/admin/reset-password', label: 'Reset password', icon: KeyRound },
+const allNavItems = [
+  {
+    to: '/admin/users',
+    label: 'User management',
+    icon: Users,
+    visible: canManageUsers,
+  },
+  {
+    to: '/admin/content',
+    label: 'Blog content',
+    icon: Newspaper,
+    visible: isAdminIT,
+  },
+  {
+    to: '/admin/articles',
+    label: 'Article management',
+    icon: FileText,
+    visible: canManageBlog,
+  },
+  {
+    to: '/admin/categories',
+    label: 'Category management',
+    icon: FolderOpen,
+    visible: canManageBlog,
+  },
+  {
+    to: '/admin/profile',
+    label: 'Profile',
+    icon: User,
+    visible: isAdmin,
+  },
+  {
+    to: '/admin/notifications',
+    label: 'Notification',
+    icon: Bell,
+    visible: isAdmin,
+  },
+  {
+    to: '/admin/reset-password',
+    label: 'Reset password',
+    icon: KeyRound,
+    visible: isAdmin,
+  },
 ];
 
 export default function AdminLayout() {
@@ -31,6 +76,8 @@ export default function AdminLayout() {
     return <Navigate to="/" replace />;
   }
 
+  const navItems = allNavItems.filter((item) => item.visible(user));
+
   function handleLogout() {
     logout();
     navigate('/');
@@ -44,6 +91,7 @@ export default function AdminLayout() {
           <div>
             <p className="admin-brand-title">Admin panel</p>
             <p className="admin-brand-user">{user.name}</p>
+            <p className="admin-brand-role">{getRoleLabel(user.role)}</p>
           </div>
         </div>
 
@@ -74,4 +122,3 @@ export default function AdminLayout() {
     </div>
   );
 }
-

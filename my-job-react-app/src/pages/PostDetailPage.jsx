@@ -3,11 +3,12 @@ import { Link, Navigate, useParams } from 'react-router-dom';
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
 import PostComments from '../components/PostComments';
-import { AUTHOR_BIO, getMovieById } from '../data/movies';
+import { AUTHOR_BIO } from '../data/movies';
+import { getPublishedBlogPostById } from '../data/adminArticles';
 
 export default function PostDetailPage() {
   const { id } = useParams();
-  const post = getMovieById(id);
+  const post = getPublishedBlogPostById(id);
 
   if (!post) {
     return <Navigate to="/" replace />;
